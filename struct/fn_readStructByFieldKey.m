@@ -1,11 +1,17 @@
 function S = fn_readStructByFieldKey(S,selectField,fieldKeys)
 
 selectFlag = fn_multistrcmp(S.(selectField),fieldKeys);
-allFields = fieldnames(S);
+
+if isstruct(S)
+    allFields = fieldnames(S);
+elseif isobject(S)
+    allFields = properties(S);
+end
+
 for j = 1:length(allFields)
     tempField = allFields{j};
     temp = S.(tempField);
-    S.(tempField) = temp(selectFlag);
+    if iscell(temp);S.(tempField) = temp(selectFlag);end
 end
 
 end
