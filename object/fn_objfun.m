@@ -4,6 +4,7 @@ function obj = fn_objfun(func,obj,varargin)
     p.addParameter('opsArgIn', {})
     p.addParameter('propCell', properties(obj))
     p.addParameter('verbose', true)
+    p.addParameter('funcName', '')
     p.parse(varargin{:});
     
     verboseProp = '';
@@ -17,7 +18,7 @@ function obj = fn_objfun(func,obj,varargin)
         catch; verboseProp = [verboseProp ' ' p.Results.propCell{i}]; end
     end
     
-    if p.Results.verbose; disp('These variables were not concatenated --'); disp(verboseProp);end
+    if p.Results.verbose; disp(['Function ' p.Results.funcName ' were not applied to these variables --']); disp(verboseProp);end
 end
 
 
