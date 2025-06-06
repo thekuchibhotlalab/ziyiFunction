@@ -24,6 +24,6 @@ basis(:,tempBasisSum<0) = -basis(:,tempBasisSum<0);
 
 varExp = varExp ./ sum(varExp);
 cumVarExp = cumsum(varExp); 
-proj = basis' * mat;
+proj = basis' * mat / size(basis,1);
 
 end

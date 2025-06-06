@@ -1,7 +1,3 @@
-%function fn_sbx2avi(filename,datapath)
-
-
-
 filename = 'kimtech_001_001';
 % create the video writer with 1 fps
 writerObj = VideoWriter([filename '_movie.avi']);
@@ -16,11 +12,3 @@ mat = sbxread(filename,1,info.max_idx);
 mat = permute(mat,[2 3 1 4]);
 writeVideo(writerObj, double(mat)/65536);
 close(writerObj);
-
-
-
-
-
-
-
-%end

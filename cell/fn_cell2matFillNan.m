@@ -20,12 +20,14 @@ end
 
 for i = 1:length(C)
     tempC = C{i};
-    if selectdim == 1
-        len1 = size(tempC,1);
-        mat(1:len1,i) = tempC;
-    elseif selectdim == 2
-        len2 = size(tempC,2);
-        mat(i,1:len2) = tempC;  
+    if ~isempty(tempC)
+        if selectdim == 1
+            len1 = size(tempC,1);
+            mat(1:len1,i) = tempC;
+        elseif selectdim == 2
+            len2 = size(tempC,2);
+            mat(i,1:len2) = tempC;  
+        end
     end
 end
 

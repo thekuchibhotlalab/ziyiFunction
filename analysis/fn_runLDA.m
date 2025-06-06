@@ -1,15 +1,26 @@
-function decoder = fn_runLDA(tActTrial,fActTrial,xvalidT,xvalidF)
-    decoder.nNeuron = size(tActTrial,1);
-    decoder.meanT = nanmean(tActTrial,2); decoder.meanF = nanmean(fActTrial,2);
-    covT = cov(tActTrial'); covF = cov(fActTrial');
-    varT = diag(diag(covT)); varF = diag(diag(covF)); 
-    decoder.varMean = (varT + varF) / 2;
-    decoder.w = (decoder.varMean) \ (decoder.meanT - decoder.meanF);
-    decoder.c = decoder.w' * (decoder.meanT + decoder.meanF) / 2; 
+function decoder = fn_runLDA(tActTrial,fActTrial,varargin)
+    p = inputParser;
+    p.KeepUnmatched = true;
+    p.addParameter('xvalidT', []);
+    p.addParameter('xvalidF', []);
+    p.addParameter('decoder', []);
+    p.parse(varargin{:});
+
+    if isempty(p.Results.decoder)
+        decoder.nNeuron = size(tActTrial,1);
+        decoder.meanT = nanmean(tActTrial,2); decoder.meanF = nanmean(fActTrial,2);
+        covT = cov(tActTrial'); covF = cov(fActTrial');
+        varT = diag(diag(covT)); varF = diag(diag(covF)); 
+        decoder.varMean = (varT + varF) / 2;
+        decoder.w = (decoder.varMean) \ (decoder.meanT - decoder.meanF);
+        decoder.c = decoder.w' * (decoder.meanT + decoder.meanF) / 2; 
+    else
+        decoder = p.Results.decoder;
+    end 
     results = runDecorder(decoder, tActTrial,fActTrial);
     decoder = catstruct(decoder,results);
-    if exist('xvalidT')
-        xvalid = runDecorder(decoder, xvalidT,xvalidF);decoder.xvalid = xvalid;
+    if ~isempty(p.Results.xvalidT)
+        xvalid = runDecorder(decoder, p.Results.xvalidT,p.Results.xvalidF);decoder.xvalid = xvalid;
     end
 end
 function results = runDecorder(decoder, T,F)
@@ -18,6 +29,7 @@ function results = runDecorder(decoder, T,F)
             results.projT = decoder.w' * T - decoder.c; results.predT = results.projT > 0;
             results.projF = decoder.w' * F - decoder.c; results.predF = results.projF <= 0;
             results.acc = nanmean([results.predT results.predF]);
+            results.dp = abs(mean(results.projT)-mean(results.projF))/sqrt(var(results.projT)/2+var(results.projF)/2);
         else
             results.proj = decoder.w' * T - decoder.c; 
             results.predT = results.proj > 0; results.predF = results.proj <= 0;

@@ -41,6 +41,22 @@ for i = 2:length(varargin)
     
     for j = 1:length(allFields)
         tempField = allFields{j}; 
+        fillNanDim = 3-dim; % fill nan in the other dimension if needed
+        
+        fillNanDiff = abs(size(tempStruct.(tempField),fillNanDim) - size(S.(tempField),fillNanDim));
+        
+        if size(S.(tempField),fillNanDim) < size(tempStruct.(tempField),fillNanDim)
+            if dim ==1 ; tempnan = nan(size(S.(tempField),dim),fillNanDiff);
+            elseif dim==2; tempnan = nan(fillNanDiff, size(S.(tempField),dim));
+            end
+            S.(tempField) = cat(fillNanDim, S.(tempField), tempnan);
+        elseif size(S.(tempField),fillNanDim) > size(tempStruct.(tempField),fillNanDim)
+            if dim ==1 ; tempnan = nan(size(tempStruct.(tempField),dim),fillNanDiff);
+            elseif dim==2; tempnan = nan(fillNanDiff, size(tempStruct.(tempField),dim));
+            end
+            tempStruct.(tempField) = cat(fillNanDim, tempStruct.(tempField), tempnan);
+        end
+        %disp([size( tempStruct.(tempField)); size( S.(tempField))])
         S.(tempField) = cat(dim, S.(tempField), tempStruct.(tempField));
     end
 end
