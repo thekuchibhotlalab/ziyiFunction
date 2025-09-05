@@ -16,11 +16,11 @@ else
     color = (matlabColors(temp1) + matlabColors(temp2))/2;
 end 
 
-
-
 if exist('colorAlpha')
     color = fn_colorAlpha(color,colorAlpha);   
 end
+
+color(color>1) = 1; color(color<0) = 0; 
 end
 
 
